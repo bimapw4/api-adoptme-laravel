@@ -32,3 +32,5 @@ $router->post('/register', "AuthController@register");
 $router->get('/animal', ["uses" => "AdoptController@GetAnimal", "middleware" => "private.auth"]);
 $router->post('/animal',  ["uses" => "AdoptController@PostAnimal", "middleware" => "private.auth"]);
 
+$router->get('/type', ["uses" => "TypeController@index", "middleware" => "private.auth"]);
+
