@@ -5,7 +5,7 @@ use App\Exceptions\UnauthorizedException;
 use App\Models\Users;
 use App\Services\Validator\ValidatorManager;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
+use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
@@ -15,12 +15,37 @@ class AuthController extends Controller
         try {
             (new ValidatorManager)->validateJSON($request, self::ruleRegister());
 
-            return Users::create([
-                "fullname" => $request->fullname,
-                "email" => $request->email,
-                "password" => hash("sha256", $request->password),
-                "address" => $request->address,
-            ]);
+            // return Users::create([
+            //     "fullname" => $request->fullname,
+            //     "email" => $request->email,
+            //     "password" => hash("sha256", $request->password),
+            //     "address" => $request->address,
+            // ]);
+
+            $JsonValue = file_get_contents(resource_path('auth.json'));
+            $data = json_decode($JsonValue, true);
+
+            if (!empty($data[$request->email])) {
+                return "lalala";
+            }
+            
+            $data[$request->email] =  [
+                "id" => count($data) + 1,
+                "data" => [
+                    "username" => $request->username,
+                    "email" => $request->email,
+                    "password" => $request->password
+                ]
+            ];
+
+            file_put_contents(resource_path('auth.json'), json_encode($data, JSON_PRETTY_PRINT));
+
+            return [
+                "status" => true,
+                "data" => $request->all()
+            ];
+
+
 
         } catch (\ValidateException $th) {
         }
@@ -31,16 +56,24 @@ class AuthController extends Controller
         try {
             (new ValidatorManager)->validateJSON($request, self::ruleLogin());
 
-            $user  = Users::where("email", $request->email)->where("password", hash('sha256', $request->password))->count();
+            $JsonValue = file_get_contents(resource_path('auth.json'));
+            $data = json_decode($JsonValue, true);
 
-            if ($user == 0) {
-                throw new UnauthorizedException("User Not Found", 404);
+            if (empty($data[$request->email])) {
+                return "lalala";
             }
 
-            return Response([
+            if ($data[$request->email]["data"]["password"] != $request->password) {
+                return [
+                    "status" => false,
+                    "data" => null
+                ];
+            };
+
+            return [
                 "status" => true,
-                "message" => "sukses login"
-            ]);
+                "data" => $request->all()
+            ];
 
         } catch (\UnauthorizedException $th) {
         }
@@ -49,10 +82,9 @@ class AuthController extends Controller
     public static function ruleRegister()
     {
         return [
-            "fullname" => "required",
+            "username" => "required",
             "email" => "required",
             "password"  => "required",
-            "address"  => "required",
         ];
     }
 

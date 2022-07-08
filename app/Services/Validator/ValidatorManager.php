@@ -11,9 +11,9 @@ use App\Models\UserGroup;
 use App\Models\UserRole;
 use App\Models\UserGroupPermission;
 use App\Exceptions\ValidateException;
+use App\Libraries\Helper;
 use App\Models\UserPermission;
 use App\Models\UserRolePermission;
-use Helper;
 
 class ValidatorManager
 {

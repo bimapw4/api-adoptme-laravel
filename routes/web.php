@@ -26,6 +26,9 @@ $router->post('/test-user', function (Request $request) use ($router) {
     return Users::get();
 });
 
-$router->get('/login', "AuthController@Login");
-$router->get('/login', "AuthController@Register");
+$router->post('/login', "AuthController@Login");
+$router->post('/register', "AuthController@register");
+
+$router->get('/animal', "AdoptController@GetAnimal");
+$router->post('/animal', "AdoptController@PostAnimal");
 

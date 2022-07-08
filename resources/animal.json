@@ -1,0 +1,67 @@
+{
+    "1": {
+        "type": "1",
+        "data": {
+            "bimapw4@gmail.com": {
+                "email": "bimapw4@gmail.com",
+                "data": [
+                    {
+                        "id": "9032",
+                        "animal": "anjing+9032",
+                        "IDUser": 1
+                    },
+                    {
+                        "id": "09232",
+                        "animal": "anjingku+09232",
+                        "IDUser": 1
+                    }
+                ]
+            },
+            "almaydac@gmail.com": {
+                "email": "almaydac@gmail.com",
+                "data": [
+                    {
+                        "id": "09321",
+                        "animal": "anjingmu+09321",
+                        "IDUser": 2
+                    },
+                    {
+                        "id": "4342",
+                        "animal": "anjingmu+4342",
+                        "IDUser": 2
+                    }
+                ]
+            }
+        }
+    },
+    "2": {
+        "type": 2,
+        "data": {
+            "bimapw4@gmail.com": {
+                "email": "bimapw4@gmail.com",
+                "data": [
+                    {
+                        "id": "62c70065cef9c",
+                        "animal": "kucing cantik",
+                        "IDUser": 1
+                    }
+                ]
+            },
+            "almayda@gmail.com": {
+                "email": "almayda@gmail.com",
+                "data": [
+                    {
+                        "id": "62c70065cef9c",
+                        "animal": "kucing cantik",
+                        "IDUser": 1
+                    },
+                    {
+                        "id": "62c704e815e3c",
+                        "animal": "kucing ganteng",
+                        "IDUser": 2
+                    }
+                ]
+            }
+        }
+    }
+}
