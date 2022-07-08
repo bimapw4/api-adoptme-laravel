@@ -6,6 +6,8 @@ use App\Models\Users;
 use App\Services\Validator\ValidatorManager;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\Auth\AuthManager;
+use Illuminate\Http\Response;
 
 class AuthController extends Controller
 {
@@ -60,19 +62,31 @@ class AuthController extends Controller
             $data = json_decode($JsonValue, true);
 
             if (empty($data[$request->email])) {
-                return "lalala";
+                return Response([
+                    "status" => false,
+                    "data" => null,
+                    "message" => "email already exist"
+                ], 422);
             }
 
             if ($data[$request->email]["data"]["password"] != $request->password) {
-                return [
+                return Response([
                     "status" => false,
-                    "data" => null
-                ];
+                    "data" => null,
+                    "message" => "invalid password"
+                ], 422);
             };
+
+            
+            $data = $data[$request->email];
+            unset($data['data']["password"]);
+
+            $jwt = (new AuthManager)->generateJWT($data);
 
             return [
                 "status" => true,
-                "data" => $request->all()
+                "data" =>  $data,
+                "token" => $jwt
             ];
 
         } catch (\UnauthorizedException $th) {

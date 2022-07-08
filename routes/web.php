@@ -29,6 +29,6 @@ $router->post('/test-user', function (Request $request) use ($router) {
 $router->post('/login', "AuthController@Login");
 $router->post('/register', "AuthController@register");
 
-$router->get('/animal', "AdoptController@GetAnimal");
-$router->post('/animal', "AdoptController@PostAnimal");
+$router->get('/animal', ["uses" => "AdoptController@GetAnimal", "middleware" => "private.auth"]);
+$router->post('/animal',  ["uses" => "AdoptController@PostAnimal", "middleware" => "private.auth"]);
 
