@@ -29,8 +29,12 @@ $router->post('/test-user', function (Request $request) use ($router) {
 $router->post('/login', "AuthController@Login");
 $router->post('/register', "AuthController@register");
 
+
 $router->get('/animal', ["uses" => "AdoptController@GetAnimal", "middleware" => "private.auth"]);
 $router->post('/animal',  ["uses" => "AdoptController@PostAnimal", "middleware" => "private.auth"]);
+$router->put('/animal',  ["uses" => "AdoptController@EditAnimal", "middleware" => "private.auth"]);
 
 $router->get('/type', ["uses" => "TypeController@index", "middleware" => "private.auth"]);
+
+$router->get('/cities', ["uses" => "CityController@index", "middleware" => "private.auth"]);
 

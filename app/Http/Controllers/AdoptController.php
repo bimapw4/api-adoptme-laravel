@@ -1,99 +1,106 @@
 <?php 
 namespace  App\Http\Controllers;
 use App\Http\Controllers\Controller;
+use App\Models\Animal;
+use App\Models\AnimalDetail;
+use App\Models\City;
 use App\Services\Validator\ValidatorManager;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdoptController extends Controller
 {
     public function GetAnimal(Request $request)
     {
-        $JsonValue = file_get_contents(resource_path('animal.json'));
-        $datas = json_decode($JsonValue, true);
+        $animal = Animal::query();
 
-        $output = [];
-        foreach ($datas as $data) {
-            foreach ($data["data"] as $key => $value) {
-                foreach ($value["data"] as $key => $animal) {
-                    $output[] = $animal;
-                };
-            } 
+        if ($request->id_city) {
+            $animal->where('id_city', $request->id_city);
         }
-        return $output;
+        return $animal->orderBy('id', 'desc')->get();
     }
 
     public function PostAnimal(Request $request)
     {
         try {
-            (new ValidatorManager)->validateJSON($request, self::rule());
+            DB::beginTransaction();
+            (new ValidatorManager)->validateJSON($request, self::rule(true));
 
-            $request->email = $request->userdata->data->email;
-            $request->id_user = $request->userdata->id;
+            $animal = Animal::create([
+                'image' => $request->image_cover, 
+                'animal' => $request->animal, 
+                'deskripsi' => $request->description,
+                'id_user' => $request->userdata->id,
+                'id_type' => $request->id_type,
+                'id_city' => $request->id_city
+            ]);
 
-            $JsonValue = file_get_contents(resource_path('animal.json'));
-            $data = json_decode($JsonValue, true);
-
-            if (empty($data[$request->type])) {
-                $data[$request->type] = [
-                    "type" => $request->type,
-                    "data" => [
-                        $request->email => [
-                            "email" => $request->email,
-                            "data" => [
-                                [
-                                    "id" => uniqid(),
-                                    "status" => "AVAILABLE",
-                                    "animal" => $request->animal,
-                                    "IDUser" => $request->id_user
-                                ]
-                            ]
-                        ]
-                    ]
-                ];
-                file_put_contents(resource_path('animal.json'), json_encode($data, JSON_PRETTY_PRINT));
-                return;
-            }
-
-            if (empty($data[$request->type]["data"][$request->email])) {
-                $data[$request->type]["data"][$request->email] = [
-                    "email" => $request->email,
-                    "data" => [
-                        [
-                            "id" => uniqid(),
-                            "status" => "AVAILABLE",
-                            "animal" => $request->animal,
-                            "IDUser" => $request->id_user
-                        ]
-                    ]
-                ];
-                file_put_contents(resource_path('animal.json'), json_encode($data, JSON_PRETTY_PRINT));
-                return;
-            }
-
-            if (!empty($data[$request->type]["data"][$request->email]["data"])) {
-                $datas = $data[$request->type]["data"][$request->email]["data"];
-                $input = [
-                    "id" => uniqid(),
-                    "status" => "AVAILABLE",
-                    "animal" => $request->animal,
-                    "IDUser" => $request->id_user
-                ];
-
-                array_push($datas, $input);
-                $data[$request->type]["data"][$request->email]["data"] = $datas;
-
-                file_put_contents(resource_path('animal.json'), json_encode($data, JSON_PRETTY_PRINT));
-                return;
-            }
+            AnimalDetail::create([
+                'id_animal' => $animal->id, 
+                'image' => $request->image, 
+                'breed' => $request->breed,
+                'age' => $request->age,
+                'sex' => $request->sex,
+                'about' => $request->about
+            ]);
+            DB::commit();
+            return;
+        } catch (\ValidateException $th) {
+            DB::rollback();
         } catch (\UnauthorizedException $th) {
+        } 
+    }
+
+    public function EditAnimal(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            (new ValidatorManager)->validateJSON($request, self::rule(false));
+
+            Animal::where("id", $request->id_animal)->update([
+                'image' => $request->cover_image, 
+                'animal' => $request->animal, 
+                'status' => $request->status,
+                'deskripsi' => $request->description,
+                'id_user' => $request->userdata->id,
+                'id_type' => $request->id_type,
+                'id_city' => $request->id_city
+            ]);
+    
+            AnimalDetail::where("id", $request->id_animal)->update([ 
+                'image' => $request->image, 
+                'breed' => $request->breed,
+                'age' => $request->age,
+                'sex' => $request->sex,
+                'about' => $request->about
+            ]);
+            DB::commit();
+            return;
+        } catch (\ValidateException $th) {
+            DB::rollback();
         }
     }
 
-    public static function rule()
+    public static function rule($post)
     {
-        return [
-            "type" => "required|integer",
+        $validate =  [
+            "cover_image" => "required",
+            "description" => "required",
+            "id_type" => "required",
+            "id_city" => "required",
+            "image" => "required",
+            "breed" => "required",
+            "age" => "required",
+            "sex" => "required",
+            "about" => "required",
             "animal" => "required"
         ];
+
+        if (!$post) {
+            $validate["status"] = "required";
+        }
+
+        return $validate;
     }
 }

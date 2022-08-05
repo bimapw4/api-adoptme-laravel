@@ -7,7 +7,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Lumen\Auth\Authorizable;
 
-class Users extends Model implements AuthenticatableContract, AuthorizableContract
+class AnimalDetail extends Model implements AuthenticatableContract, AuthorizableContract
 {
     use Authenticatable, Authorizable;
 
@@ -16,9 +16,14 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
      *
      * @var array
      */
-    protected $table = "users";
+    protected $table = "animal_detail";
     protected $fillable = [
-        'fullname', 'email', 'password', 'phone'
+        'id_animal', 
+        'image', 
+        'breed',
+        'age',
+        'sex',
+        'about'
     ];
 
     /**
@@ -27,6 +32,5 @@ class Users extends Model implements AuthenticatableContract, AuthorizableContra
      * @var array
      */
     protected $hidden = [
-        'password','verification_code' ,'created_at', 'updated_at'
     ];
 }
