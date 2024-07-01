@@ -1,4 +1,4 @@
-FROM php:7.2-fpm-alpine
+FROM php:7.2
 
 # Set the working directory
 WORKDIR /var/www/html
