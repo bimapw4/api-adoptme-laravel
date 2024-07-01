@@ -44,6 +44,7 @@ services:
       - ./src:/var/www/html
     ports:
       - '9000:9000'
+    user: www-data
     networks:
       - laravel
 
