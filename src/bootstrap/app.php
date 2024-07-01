@@ -25,14 +25,6 @@ $app->withFacades();
 
 $app->withEloquent();
 
-$nullLogger = new NullHandler();
-\Log::getMonolog()->setHandlers(array($nullLogger));
-
-$app->configureMonologUsing(function($monolog) {
-    $nullLogger = new \Monolog\Handler\NullHandler();
-    $monolog->setHandlers(array($nullLogger));
-  });
-
 /*
 |--------------------------------------------------------------------------
 | Register Container Bindings
