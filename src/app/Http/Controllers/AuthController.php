@@ -23,6 +23,7 @@ class AuthController extends Controller
                 "email" => $request->email,
                 "password" => hash("sha256", $request->password),
                 "address" => $request->address,
+                "phone" => $request->phone,
             ]);
 
         } catch (\ValidateException $th) {
