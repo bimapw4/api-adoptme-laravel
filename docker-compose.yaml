@@ -36,7 +36,6 @@ services:
       - laravel
 
   php:
-    image: php:7.2
     build:
       context: .
       dockerfile: Dockerfile
@@ -49,7 +48,7 @@ services:
       - laravel
 
   composer:
-    image: composer:2.7.6
+    image: composer:latest
     container_name: composer
     volumes:
       - ./src:/var/www/html
