@@ -89,7 +89,6 @@ class AdoptController extends Controller
             "description" => "required",
             "id_type" => "required",
             "id_city" => "required",
-            "image" => "required",
             "breed" => "required",
             "age" => "required",
             "sex" => "required",
