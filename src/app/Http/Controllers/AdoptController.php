@@ -37,7 +37,7 @@ class AdoptController extends Controller
 
             AnimalDetail::create([
                 'id_animal' => $animal->id, 
-                'image' => $request->image, 
+                'image' => $request->image_cover, 
                 'breed' => $request->breed,
                 'age' => $request->age,
                 'sex' => $request->sex,
@@ -85,7 +85,7 @@ class AdoptController extends Controller
     public static function rule($post)
     {
         $validate =  [
-            "cover_image" => "required",
+            "image_cover" => "required",
             "description" => "required",
             "id_type" => "required",
             "id_city" => "required",
